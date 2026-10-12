@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data:; connect-src https: http:; media-src 'self' blob: file:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>硬字幕移除</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header><div><strong>硬字幕移除</strong><small>Premiere Pro 25 · 火山 AI MediaKit</small></div><span id="connection" class="pill">未连接</span></header>
+  <main>
+    <details open>
+      <summary>连接与导出设置</summary>
+      <label>AI MediaKit API Key <span class="muted">仅保存在此 Windows 用户下</span></label>
+      <div class="row"><input id="apiKey" type="password" autocomplete="off" placeholder="粘贴火山 AI MediaKit API Key"><button id="saveKey">保存</button></div>
+      <label for="outputDir">处理结果目录</label><input id="outputDir" type="text" placeholder="例如 D:\\SubtitleResults">
+      <label for="presetPath">AME 导出预设（.epr）</label><input id="presetPath" type="text" placeholder="Premiere/Media Encoder 的 H.264 MP4 预设路径">
+      <label for="concurrency">云端并行任务数</label>
+      <select id="concurrency"><option value="1">1</option><option value="2" selected>2（推荐）</option><option value="3">3</option><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option></select>
+      <p class="hint">可选 1–20；账号并发配额可能更低，遇到 429 时请降低并行数后重试。</p>
+      <p class="hint">临时预览导出不含音频；时间线原音频轨道保持不变。</p>
+    </details>
+    <section>
+      <div class="section-title"><h2>时间线选择</h2><button id="scan">扫描选中片段</button></div>
+      <div id="clipList" class="cards empty">请在 Premiere 时间轴中选择视频片段。</div>
+    </section>
+    <section id="review" hidden>
+      <div class="section-title"><h2>识别与擦除区域</h2><span id="reviewCount" class="muted"></span></div>
+      <div class="preview-wrap" id="previewWrap"><video id="previewVideo" controls playsinline></video><canvas id="regionCanvas"></canvas></div>
+      <div class="row controls"><button id="addRegion">添加擦除框</button><button id="removeRegion">删除选中框</button><span id="regionHelp" class="muted">拖动创建；拖框移动</span></div>
+      <div id="ocrRows" class="ocr-list"></div>
+      <div id="costBox" class="cost" hidden></div>
+      <div class="row"><button id="continueClip" class="primary" disabled>确认总体区域并处理本批</button><button id="skipClip">跳过整批</button></div>
+    </section>
+    <section>
+      <div class="section-title"><h2>处理进度</h2><span id="progressLabel" class="muted">等待开始</span></div>
+      <progress id="progress" max="100" value="0"></progress>
+      <div id="messages" class="messages" aria-live="polite"></div>
+    </section>
+  </main>
+  <script src="src/job-planner.js"></script>
+  <script src="src/credential-store.js"></script>
+  <script src="src/volcengine-client.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+output/
+outputs/
+renders/
+temp/
+*.log
+*.key
+*.dpapi
+.env
